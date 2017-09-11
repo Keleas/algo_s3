@@ -11,8 +11,25 @@ n <= 1000.
 
 #include <iostream>
 
+int fact ( int n, int divider )
+{
+    int count = 0;
+
+    while ( n )
+    {
+        n /= divider;
+        count += n;
+    }
+    return count;
+}
+
 int main()
 {
+    int n;
+    std :: cin >> n;
+    std :: cout << fact(n,5);
+
     return 0;
 }
+
 

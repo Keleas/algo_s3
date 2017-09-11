@@ -12,9 +12,35 @@
 ****************************************************************************/
 
 #include <iostream>
+#include <vector>
+#include <iterator>
+
+using namespace std;
+
+vector <int>  SimpleDividers ( int n )
+{
+    vector <int> result;
+    int curNum = n, probe = 2;
+            while ( curNum != 1) {
+                if ( curNum % probe != 0 ) probe++;
+                        else {
+                    curNum /= probe;
+                   result.insert( result.end(), probe );
+                }
+            }
+    return result;
+}
 
 int main()
 {
+    int n;
+    cin >> n;
+    vector <int> dividers = SimpleDividers( n );
+    for ( int i = 0; i < dividers.size(); ++i)
+    {
+        cout << dividers[i] << ' ';
+    }
     return 0;
 }
+
 

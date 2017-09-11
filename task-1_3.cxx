@@ -13,8 +13,23 @@ a, b, c, d ≤ 1000.
 
 #include <iostream>
 
+int gcd ( int a, int b) // greatest common divisor
+{
+    return ( b == 0 ) ?  a : gcd ( b, a % b);
+}
+
 int main()
 {
+    int a,b,c,d;
+    std :: cin >> a >> b >> c >> d;
+
+    int m = a * d + c * b;
+    int n = b * d;
+    int divider = gcd (n, m);
+
+    std :: cout << m / divider << " " << n / divider << std :: endl;
+
     return 0;
 }
+
 
