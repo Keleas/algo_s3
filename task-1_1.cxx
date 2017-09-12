@@ -26,8 +26,8 @@ int fact ( int n, int divider )
 int main()
 {
     int n;
-    std :: cin >> n;
-    std :: cout << fact(n,5);
+    std::cin >> n;
+    std::cout << fact(n,5);
 
     return 0;
 }

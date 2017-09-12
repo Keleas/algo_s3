@@ -17,23 +17,27 @@ n ≤ 10^7.
 
 int fsd ( int n ) // first simple divisor
 {
-    for ( int i = 3; i <= sqrt(n); ++i )
+    for ( int i = 2; i <= sqrt(n); ++i )
         if ( n % i == 0 ) return i;
+	
     return 1;
 }
 
 int main()
 {
     int n;
-    std :: cin >> n;
+    std::cin >> n;
 
-    if ( n % 2 != 0)
+    if ( fsd(n) != 1 )
     {
         int div = fsd (n);
-        if ( div != 1 ) std :: cout << n/div << " " << (div - 1) * (n / div) << std :: endl;
-            else  std :: cout << 1 << " " << n - 1 << std :: endl;
+        if ( div != 1 ) 
+			std::cout 	<< n / div << " " 
+						<< (div - 1) * (n / div) 
+						<< std :: endl;
      }
-    else std :: cout << n/2 << " " << n/2 << std :: endl;
+    else std::cout 	<< '1' << " " << n 
+					<< std::endl;
 
     return 0;
 }
