@@ -19,9 +19,32 @@ n < 1000, координаты < 10000.
 ****************************************************************************/
 
 #include <iostream>
+#include <cmath>
+
+struct Point
+{
+    int x, y;
+};
+
+double SquareTr ( const Point a, const Point b, const Point c )
+{
+    return fabs(0.5 * ( (a.x - c.x) * (b.y - c.y) - (b.x - c.x) * (a.y - c.y) ));
+}
 
 int main()
 {
+    int n;
+    std::cin >> n;
+    Point *arr = new Point[n];
+    for ( int i = 0; i < n; ++i )
+        std::cin >> arr[i].x >> arr[i].y;
+
+    double SqSum = 0;
+    for ( int i = 0; i < n -2; ++i )
+        SqSum += SquareTr( arr[0], arr[i+1], arr[i+2] );
+
+    std::cout << SqSum;
+
     return 0;
 }
 
