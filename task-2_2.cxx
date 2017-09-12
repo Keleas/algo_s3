@@ -26,6 +26,7 @@ struct Point
     int x, y;
 };
 
+// площадь треугольника через координаты 
 double SquareTr ( const Point a, const Point b, const Point c )
 {
     return fabs(0.5 * ( (a.x - c.x) * (b.y - c.y) - (b.x - c.x) * (a.y - c.y) ));
