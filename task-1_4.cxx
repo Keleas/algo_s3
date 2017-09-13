@@ -13,26 +13,26 @@ n ≤ 10^7.
 
 #include <iostream>
 
-int fsd( int n )
+int fsd(int n)
 {
-	for( int i = 2; i*i <= n; ++i )
-		if( n % i == 0 ) return i;
+    for(int i = 2; i*i <= n; ++i)
+        if(n % i == 0) return i;
 
-	return 1;
+    return 1;
 }
 
 int main()
 {
-	int n;
-	std::cin >> n;
+    int n;
+    std::cin >> n;
 
-	if( fsd(n) != 1 )
-	{
-		int div = fsd(n);
-		if( div != 1 )
-			std::cout << n / div << " " << (div -1) * (n / div) << std::endl;
-	}
-	else std::cout << '1' << " " << n - 1 << std::endl;
+    if(fsd(n) != 1)
+    {
+        int div = fsd(n);
+        if(div != 1)
+            std::cout << n / div << " " << (div-1) * (n/div) << std::endl;
+    }
+    else std::cout << '1' << " " << n - 1 << std::endl;
 
-	return 0;
+    return 0;
 }

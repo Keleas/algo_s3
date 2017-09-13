@@ -23,36 +23,36 @@ n < 1000, координаты < 10000.
 
 struct Point
 {
-  int x, y;
-  
-  Point ( int a, int b )
+    int x, y;
+
+    Point(int a, int b)
     : x{a}, y{b}
-  {}
+    {}
 };
 
-// площадь треугольника через координаты 
-double SquareTr ( const Point a, const Point b, const Point c )
+// площадь треугольника через координаты
+double SquareTr(const Point a, const Point b, const Point c)
 {
-    return fabs(0.5 * ( (a.x - c.x) * (b.y - c.y) - (b.x - c.x) * (a.y - c.y) ));
+    return fabs(0.5 * ((a.x-c.x)*(b.y-c.y) - (b.x-c.x)*(a.y-c.y)) );
 }
 
 int main()
 {
-  int n;
-  std::cin >> n;
-  Point *arr = new Point[n];
-  
-  for ( int i = 0; i < n; ++i )
+    int n;
+    std::cin >> n;
+    Point *arr = new Point[n];
+
+    for(int i = 0; i < n; ++i)
     std::cin >> arr[i].x >> arr[i].y;
 
-  double SqSum = 0;
-  for ( int i = 0; i < n -2; ++i )
-    SqSum += SquareTr( arr[0], arr[i+1], arr[i+2] );
+    double SqSum = 0;
+    for(int i = 0; i < n -2; ++i)
+    SqSum += SquareTr(arr[0], arr[i+1], arr[i+2]);
 
-  std::cout << SqSum;
-  
-  delete [] arr;
+    std::cout << SqSum;
 
-  return 0;
+    delete [] arr;
+
+    return 0;
 }
 
