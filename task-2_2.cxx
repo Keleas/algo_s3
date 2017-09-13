@@ -23,7 +23,11 @@ n < 1000, координаты < 10000.
 
 struct Point
 {
-    int x, y;
+  int x, y;
+  
+  Point ( int a, int b )
+    : x{a}, y{b}
+  {}
 };
 
 // площадь треугольника через координаты 
@@ -34,18 +38,21 @@ double SquareTr ( const Point a, const Point b, const Point c )
 
 int main()
 {
-    int n;
-    std::cin >> n;
-    Point *arr = new Point[n];
-    for ( int i = 0; i < n; ++i )
-        std::cin >> arr[i].x >> arr[i].y;
+  int n;
+  std::cin >> n;
+  Point *arr = new Point[n];
+  
+  for ( int i = 0; i < n; ++i )
+    std::cin >> arr[i].x >> arr[i].y;
 
-    double SqSum = 0;
-    for ( int i = 0; i < n -2; ++i )
-        SqSum += SquareTr( arr[0], arr[i+1], arr[i+2] );
+  double SqSum = 0;
+  for ( int i = 0; i < n -2; ++i )
+    SqSum += SquareTr( arr[0], arr[i+1], arr[i+2] );
 
-    std::cout << SqSum;
+  std::cout << SqSum;
+  
+  delete [] arr;
 
-    return 0;
+  return 0;
 }
 
