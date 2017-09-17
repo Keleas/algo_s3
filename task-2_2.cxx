@@ -28,6 +28,7 @@ struct Point
     Point(int a, int b)
     : x{a}, y{b}
     {}
+    ~Point();
 };
 
 // площадь треугольника через координаты
