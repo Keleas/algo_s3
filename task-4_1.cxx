@@ -61,11 +61,11 @@ public:
 
     using value_type = T;
 
-    int front() const{
+    T front() const{
         return buffer[head];
     }
 
-    int back() const{
+    T back() const{
         return buffer[end];
     }
 
@@ -122,7 +122,7 @@ public:
             end %= dcapacity;
             ++dsize;
     }
-    //вытакскиваем
+
     void push_front(T x)
     {
         if( capacity() == 0)
@@ -142,7 +142,7 @@ public:
         }
         ++dsize;
     }
-
+    //вытакскиваем
     void pop_front()
     {
         if( !empty()){
@@ -163,19 +163,9 @@ public:
 
     void print_deque() const
     {
-        std::cout << "head: " << head <<  ", end: " << end << "/n";
-        for( size_t i =0; i < dcapacity; ++i)
-        {
-            if( i >= end || i <= head)
-                std::cout << "|err";
-            else std::cout << "|" << buffer[i];
-            if( i == head)
-                std::cout << "|>";
-            else if( i == end)
-                std::cout << "<|";
-            else std::cout << "|";
-        }
-        std::cout << std::endl;
+        for( size_t i =0; i < dsize; ++i)
+            std::cout << "|" << buffer[i];
+        std::cout << "|" << std::endl;
     }
 
 private:
@@ -204,7 +194,7 @@ int main()
     bool check = true;
 
     std::cin >> n;
-    for( size_t i =0; i < n; ++i)
+    for( int i = 0; i < n; ++i)
     {
         std::cin >> cmd >> num;
 
@@ -255,7 +245,7 @@ int main()
       }
       std::cout << std::endl;
 
-     // Deque::print_deque();
+      //arr.print_deque();
 
       return 0;
     }
