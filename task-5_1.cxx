@@ -26,6 +26,20 @@
   ]()}[](({}  | {[]()}[](({}))
 
 ****************************************************************************/
+
+/****************************************************************************
+ Идея:
+
+ Сформировать к исходным данным надстройку слева и справа, чтобы
+ получилось правльное скобочное выражение при их слиянии.
+ Посимвольно считываем поток ввода. Помещаем в стек только скобки, которые не образуют
+ правильные скобоыне выражения, т.е. мы будем знать к каким скобкам нужно составлять
+ надстройку слева и справа. В ходе посимвольного считывания скобок, проверяем на возможность
+ достроить исходное выражение до правильного.
+
+****************************************************************************/
+
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -81,7 +95,7 @@ public:
 private:
     T *buffer;
     size_t s_capacity;
-    int head;
+    size_t head;
     static constexpr size_t mem_size = 2;
 
     void init_buffer()
@@ -103,9 +117,9 @@ int main()
         std::string s_mid{""};
         //строка для построения скобочного выражения в конце
         std::string s_end{""};
-        std::string s{""};
-        std::getline( std::cin, s);
-        std::istringstream is {s};
+
+        std::getline( std::cin, s_mid);
+        std::istringstream is {s_mid};
         char c;
 
         while ( is >> c)
@@ -115,80 +129,53 @@ int main()
             switch (c) {
             case '(':
                 arr.push(c);
-                s_mid += c;
                 break;
             case '[':
                 arr.push(c);
-                s_mid += c;
                 break;
             case '{':
                 arr.push(c);
-                s_mid += c;
                 break;
             case ')':
                 if( !arr.empty()){
                     head = arr.pop();
-                    //чекаем на ложный ввод
+                    //проверяем на неправильный ввод
                     if ( head == '{' || head == '[')
                         throw false;
-                    //если встречаем скобку аналогичного типа,
-                    //то в поток вывода кидаем прав. скоб. выражение
-                    else if( head == '('){
-                        s_mid += c;
-                    }
-                    //в противном случе, все кидаем обратно в стек
-                    else{
+                    //если не было до нее закр. скобки такого же типа
+                    else if( head == ')' || head == '}' || head == ']'){
                         arr.push(head);
                         arr.push(c);
-                        s_mid += c;
                     }
                 }
-                //если стек пуст
-                else{
-                    arr.push(c);
-                    s_mid += c;
-                }
+                else arr.push(c);
                 break;
             case ']':
                 if( !arr.empty()){
                     head = arr.pop();
                     if ( head == '{' || head == '(')
                         throw false;
-                    else if( head == '['){
-                        s_mid += c;
-                    }
-                    else{
+                    else if( head == ')' || head == '}' || head == ']'){
                         arr.push(head);
                         arr.push(c);
-                        s_mid += c;
                     }
                 }
-                else{
-                    arr.push(c);
-                    s_mid += c;
-                }
+                else arr.push(c);
                 break;
             case '}':
                 if( !arr.empty()){
                     head = arr.pop();
                     if ( head == '[' || head == '(')
                         throw false;
-                    else if( head == '{'){
-                        s_mid += c;
-                    }
-                    else{
+                    else if( head == ')' || head == '}' || head == ']'){
                         arr.push(head);
                         arr.push(c);
-                        s_mid += c;
                     }
                 }
-                else{
-                    arr.push(c);
-                    s_mid += c;
-                }
+                else arr.push(c);
                 break;
             default:
-                throw false; //кидаем ошибку
+                throw false;
                 break;
             }
         }
@@ -240,6 +227,4 @@ int main()
         std::cerr << "Ooops, uknown error" << std::endl;
         return 1;
     }
-
-
 }
