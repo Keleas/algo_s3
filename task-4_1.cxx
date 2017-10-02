@@ -187,6 +187,8 @@ private:
 
 };
 
+enum OP{ push_front = 1, pop_front = 2, push_back = 3, pop_back = 4};
+
 int main()
 {
     Deque<int> arr;
@@ -199,10 +201,10 @@ int main()
         std::cin >> cmd >> num;
 
         switch (cmd) {
-        case 1:
+        case OP::push_front:
           arr.push_front(num);
           break;
-        case 2:
+        case OP::pop_front:
           if (arr.empty()) {
             if (num != -1) {
               check = false;
@@ -216,10 +218,10 @@ int main()
             }
           }
           break;
-        case 3:
+        case OP::push_back:
           arr.push_back(num);
           break;
-        case 4:
+        case OP::pop_back:
           if (arr.empty()) {
             if (num != -1) {
               check = false;
