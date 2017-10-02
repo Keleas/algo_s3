@@ -54,6 +54,25 @@
 
 ****************************************************************************/
 
+/****************************************************************************
+
+Идея:
+
+Цель алгоритма свести последовательность прямоугольников в возрастаующую "лесенку"
+при этом проверяя возможные площади на максимум. Суть такова, что пока идет возрастание высоты,
+добавляем элементы в стек. После того, как встретился элемент с меньшей высотой, начинаем обрабатывать
+данные в стеке. Обработка стека - проверяем площадь первого эл-та стека затем наращиваем ширину следующему
+за ним прямоугольнику и проверяем его площадь и так пока не встрертим эл-т в стеке, чья высота меньше текущего,
+или пока не закончится стек. В случае нахождения эл-та ниже текущего, добваляем в стек новый прямоугольник. Таким образом,
+формируем "лесенку".
+
+Док-во:
+
+В самом худшей ситуации, когда заданные прямоугольники уже формируют  возрастающую "лесенку",
+количество итераций будет равно 2n: проверка всех эл-тов до конца, а потом перебор их всех в стеке.
+Таким образом, асимптотика - O(n).
+****************************************************************************/
+
 #include <iostream>
 
 class Rectangle{
@@ -103,7 +122,7 @@ public:
     }
 
     // увеличение стека
-    void growSize() {
+    void add_size() {
         int newMemorySize = s_capacity > 0 ? s_capacity * 2 : 5;
         T *new_buff = new T[newMemorySize];
 
@@ -115,6 +134,11 @@ public:
         s_capacity = newMemorySize;
     }
 
+    // получение элемента с вершины (без удаления)
+    T &see() {
+        return pop(false);
+    }
+
     T &pop(bool check = true) {
         if(check) {
             return buffer[(head--) - 1];
@@ -122,14 +146,9 @@ public:
         return buffer[head - 1];
     }
 
-    // получение элемента с вершины (без удаления)
-    T &see() {
-        return pop(false);
-    }
-
     void push(T x) {
         if(s_capacity == head) {
-            growSize();
+            add_size();
         }
         buffer[head++] = x;
     }
@@ -154,41 +173,40 @@ int get_max_square(Rectangle *arr, size_t n)
     for(size_t i = 1; i < n; ++i)
     {
         Rectangle *lastRect = &stack.see();    //последний прямоугольник в стеке
-        Rectangle *curRect = &arr[i]; //текущий прямоугольник
+        Rectangle *curRect = &arr[i];               //текущий прямоугольник
 
         if( curRect->get_height() >= lastRect->get_height())
-            // текущий прямоугольник выше, добавляем его в стек
             stack.push(*curRect);
         else
         {
-            // текущий прямоугольник ниже предыдущих
+            //текущий прямоугольник ниже предыдущих
             int newHeight = lastRect->get_height();
-
-            while(newHeight > curRect->get_height()) { // пока не встретим прямоугольник ниже или такой же по высоте
+            //пока не встретим прямоугольник ниже или такой же по высоте
+            while(newHeight > curRect->get_height()){
                 lastRect = &stack.pop();
 
-                if(lastRect->get_area() > max)
+                if( lastRect->get_area() > max)
                     max = lastRect->get_area();
 
-                if(stack.empty()) {
-                    // больше прямоугольников нет
-                    // проверяем прямоугольник, сложенный с последним по высоте как текущий
+                if( stack.empty()) {
+                    //добавляем новый прямоугольник, формирующий "лесенку"
                     Rectangle new_rect(lastRect->get_width() + curRect->get_width(), newHeight = curRect->get_height());
                     stack.push(new_rect);
                 }
                 else
                 {
-                    // складываем с предыдущим прямоугольником
+                    //наращиваем длину следующему эл-ту
                     stack.see().grow_width(lastRect->get_width());
                     int nextHeight = stack.see().get_height();
 
-                    if(nextHeight > curRect->get_height())
+                    if( nextHeight > curRect->get_height())
                         newHeight = nextHeight;
-                    else if(nextHeight == curRect->get_height()) {
+                    else if( nextHeight == curRect->get_height()) {
                         stack.see().grow_width(curRect->get_width());
                         newHeight = curRect->get_height();
                     }
                     else{
+                        //добавляем новый прямоугольник, формирующий "лесенку"
                         Rectangle new_rect(lastRect->get_width() + curRect->get_width(), newHeight = curRect->get_height());
                         stack.push(new_rect);
                     }
