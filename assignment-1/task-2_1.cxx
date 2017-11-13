@@ -22,8 +22,8 @@ int main()
 {
   int n;
   std::cin >> n;
-  int *A = new int[n];
-  int *B = new int[n];
+  int* A = new int[n];
+  int* B = new int[n];
   
   for( int i = 0; i < n; ++i )
     std::cin >> A[i];
@@ -41,7 +41,7 @@ int main()
   int indB = 0;
   int maxSum = A[0] + B[0];
   for( int i = 1; i < n; ++i )
-    if ( A[i] + B[i] > maxSum ) 
+    if ( A[i] + B[i] > maxSum ) {
     {
       maxSum = A[i] + B[i];
       indB = i;
@@ -55,8 +55,9 @@ int main()
 
   std::cout << indA << " " << indB << std::endl;
 
-  delete [] A;
-  delete [] B;
+  delete[] A;
+  delete[] B;
+  
   return 0;
 }
 
