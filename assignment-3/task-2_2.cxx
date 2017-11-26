@@ -57,9 +57,235 @@
 ****************************************************************************/
 
 #include <iostream>
+#include <queue>
 
-int main()
-{
+template <class T>
+class TreeNode {
+public:
+    T key;
+    int priority;
+    TreeNode<T> *left;
+    TreeNode<T> *right;
+
+    TreeNode(const T &_data, int _priority = 0): key(_data), priority(_priority), left(NULL), right(NULL) {
+    }
+};
+
+template <class T>
+class NaiveTree {
+public:
+    NaiveTree() : root(NULL) {
+    }
+
+    ~NaiveTree() {
+        std::queue<TreeNode<T> *> tmp;
+        if( root != NULL ) {
+            tmp.push(root);
+        }
+
+        while( !tmp.empty() ) {
+            TreeNode<T> *cur = tmp.front();
+            if( cur->left != NULL )
+                tmp.push(cur->left);
+
+            if( cur->right != NULL )
+                tmp.push(cur->right);
+            delete cur;
+            tmp.pop();
+        }
+    }
+
+    void setRoot(TreeNode<T> *_root) {
+        root = _root;
+    }
+
+    void insert(const T &data) {
+        TreeNode<T> *node = new TreeNode<T>(data);
+        TreeNode<T> *curNode = root;
+
+        if( curNode == NULL ) {
+            setRoot(node);
+            return;
+        }
+
+        while( true ) {
+            if( data < curNode->key ) {
+                if( curNode->left != NULL )
+                    curNode = curNode->left;
+                else {
+                    curNode->left = node;
+                    return;
+                }
+            }
+            else {
+                if( curNode->right != NULL )
+                    curNode = curNode->right;
+                else {
+                    curNode->right = node;
+                    return;
+                }
+            }
+        }
+    }
+
+    int get_mWidth() {
+        int maxWidth = 0,
+            curWidth = 0;
+
+        std::queue<TreeNode<T> *> layerNodes;
+        TreeNode<T> *cur = NULL;
+        layerNodes.push(root);
+
+        while( !layerNodes.empty() ) {
+            if(( curWidth = layerNodes.size()) > maxWidth )
+                maxWidth = curWidth;
+
+            for( size_t i = 0; i < curWidth; ++i ) {
+                cur = layerNodes.front();
+                if( cur->left != NULL )
+                    layerNodes.push(cur->left);
+
+                if(cur->right != NULL)
+                    layerNodes.push(cur->right);
+                layerNodes.pop();
+            }
+        }
+        return maxWidth;
+    }
+
+private:
+    TreeNode<T> *root;
+};
+
+template <class T>
+class TreapTree {
+private:
+    TreeNode<T> *root;
+public:
+    TreapTree() : root(NULL) {
+    }
+
+    ~TreapTree() {
+        std::queue<TreeNode<T> *> tmp;
+        if( root != NULL )
+            tmp.push(root);
+
+        while( !tmp.empty() ) {
+            TreeNode<T> *cur = tmp.front();
+            if( cur->left != NULL )
+                tmp.push(cur->left);
+
+            if( cur->right != NULL )
+                tmp.push(cur->right);
+
+            delete cur;
+            tmp.pop();
+        }
+    }
+
+    void split(TreeNode<T> *curNode, const T &data, TreeNode<T> *&left, TreeNode<T> *&right) {
+        if( curNode == NULL ) {
+            left = NULL;
+            right = NULL;
+        }
+        else if( curNode->key <= data ) {
+            split(curNode->right, data, curNode->right, right);
+            left = curNode;
+        }
+        else {
+            split(curNode->left, data, left, curNode->left);
+            right = curNode;
+        }
+    }
+
+    void setRoot(TreeNode<T> *_root) {
+        root = _root;
+    }
+
+    void insert(const T &data, int priority) {
+        TreeNode<T> *node = new TreeNode<T>(data, priority);
+        TreeNode<T>*curNode = root;
+        TreeNode<T>*prevNode = root;
+
+        if( curNode == NULL ) {
+            setRoot(node);
+            return;
+        }
+
+        // Спускаемся по дереву и останавливаемся на первом элементе,
+        // в котором значение приоритета оказалось меньше заданого
+        while( curNode != NULL && priority <= curNode->priority ) {
+            prevNode = curNode;
+            if( data <= curNode->key )
+                curNode = curNode->left;
+            else
+                curNode = curNode->right;
+        }
+
+        // Разрезаем поддерево найденного элемента на T1 и Т2.
+        // Полученные T1 и T2 записываем в качестве левого и правого
+        split(curNode, data, node->left, node->right);
+
+        // Ставим на место элемента, найденного в первом пункте.
+        if( curNode == root )
+            root = node;
+        else if( data <= prevNode->key ) {
+            prevNode->left = node;
+        }
+        else {
+            prevNode->right = node;
+        }
+    }
+
+    int get_mWidth() {
+        int maxWidth = 0;
+        int curWidth = 0;
+
+        std::queue<TreeNode<T> *> layerNodes;
+        TreeNode<T> *cur = NULL;
+        layerNodes.push(root);
+
+        while( !layerNodes.empty() ) {
+            if( (curWidth = layerNodes.size()) > maxWidth ) {
+                maxWidth = curWidth;
+            }
+
+            for( size_t i = 0; i < curWidth; ++i ) {
+                cur = layerNodes.front();
+                if( cur->left != NULL )
+                    layerNodes.push(cur->left);
+                if(cur->right != NULL)
+                    layerNodes.push(cur->right);
+
+                layerNodes.pop();
+            }
+        }
+
+        return maxWidth;
+    }
+};
+
+
+
+int main() {
+    NaiveTree<long> naive;
+    TreapTree<long> treap;
+
+    size_t n = 0;
+    std::cin >> n;
+
+    long data = 0;
+    int priority = 0;
+
+    for( size_t i = 0; i < n; ++i ) {
+        if( std::cin >> data >> priority ) {
+            naive.insert(data);
+            treap.insert(data, priority);
+        }
+    }
+
+    std::cout << treap.get_mWidth() - naive.get_mWidth() << std::endl;
+
     return 0;
 }
 
