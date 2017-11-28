@@ -7,27 +7,25 @@ root→Key ≤ K, то узел K добавляется в правое под�
 ****************************************************************************/
 
 /****************************************************************************
-
-Задача 1_1 Выведите элементы в порядке in-order (слева направо).
-
+Задача 1_2 Выведите элементы в порядке pre-order (сверху вниз).
   in    | out
   ----- | ---
   3     |
-  2 1 3 | 1 2 3
-
+  2 1 3 | 2 1 3
   in    | out
   ----- | ---
   3     |
   1 2 3 | 1 2 3
-
   in    | out
   ----- | ---
   3     |
-  3 1 2 | 1 2 3
-
+  3 1 2 | 3 1 2
+  in    | out
+  ----- | ---
+  4     |
+  3 1 4 2 | 3 1 2 4
 ****************************************************************************/
 
-#include <cassert>
 #include <iostream>
 #include <queue>
 #include <fstream>
@@ -46,9 +44,9 @@ public:
     {
         if( !n ) return this;
         if( !this ) return n;
-        Node *parent {nullptr}, *t{this->root()};
-        while( t )
-        {
+        Node *parent {nullptr};
+        Node*t{this->root()};
+        while( t ) {
             parent = t;
             if( n->key < t->key ) t = t->lt;
             else t = t->rt;
@@ -234,17 +232,7 @@ int main()
         head = head->insert(new Node{mem});
     }
 
-    //wfs(head);
-
     prefix_traverse(head, print_key);
 
-    /*
-    Node* head = read( "E:\\tree.txt" );
-
-    wfs( head );
-
-    std::cout << "\n" << "--------------------------------------------------------------" << "\n";
-    prefix_traverse( head, print_key );  // prefix way of tree (1.8 and 1.9)
-    */
     return 0;
 }
