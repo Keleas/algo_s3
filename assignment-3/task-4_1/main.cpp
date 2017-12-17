@@ -110,7 +110,15 @@ int main()
         if(a != b)
             std::cerr << "Doesn't match \n";
     }
-    cout << "Ready \n";
+
+    FILE* orig = fopen("E:\\original.txt","r");
+    int compression = fileno(orig);
+    FILE* stream2 = fopen("E:\\encoded.txt","r");
+    int handle2 = fileno(stream2);
+    cout << (double)filelength(handle2) / (double)filelength(compression) * 100 << "\n";
+
+    fclose(orig);
+    fclose(stream2);
 
     return 0;
 }

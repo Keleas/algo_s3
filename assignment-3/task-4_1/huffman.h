@@ -7,6 +7,8 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <io.h>
+#include <stdio.h>
 
 /***************************************************************************/
 
