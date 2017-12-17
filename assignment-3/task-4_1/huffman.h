@@ -2,65 +2,139 @@
 #define HUFFMAN_H
 
 
-#include <iostream>
-#include <map>
-#include <string>
-#include <queue>
-#include <assert.h>
-#include <vector>
 #include <fstream>
+#include <map>
+#include <iostream>
+#include <list>
+#include <string>
 
-class Node
-{
+/***************************************************************************/
+
+typedef char byte;
+typedef bool bit;
+
+/***************************************************************************/
+
+using std::map;
+using std::list;
+using std::string;
+using std::ifstream;
+using std::ofstream;
+using std::cout;
+
+/***************************************************************************/
+
+class IInputStream {
 public:
-    int key;
-    char data;
-    Node(char _data, int _key)
-        : key {_key}, data{_data}
+    IInputStream(ifstream & fin):
+            fin_(fin)
     {}
-
-    Node(Node* _left, Node* _right, int _key)
-        : lt{_left}, rt{_right}, key{_key}, data{NULL}
-    {}
-
-    Node* insert( Node *n ); //вставка
-    Node* transplant( Node* q ); //поменять местами
-    Node* Delete(); //удалить
-    Node* find( int k ); //найти элемент
-    Node* minimum(); //найти минимальный
-    Node* maximum(); //найти максимальный
-    Node* root(); //корень дерева
-    Node* next(); //следующий от текущего по ключу
-    Node* prev(); //предыдущий по ключу
-
-    Node* right() {return rt;}
-    Node* left() {return lt;}
-    Node* parent() {return p;}
-
-    bool is_leaf() {
-        return !lt && !rt;
+    // Возвращает false, если поток закончился
+    bool Read(byte& value){
+        if(fin_.eof())
+            return false;
+        fin_.get(value);
+        return true;
     }
 
-
-    void BuildTable(Node* head); // таблица кодов элементов
 private:
-    Node *p {nullptr}; //корень
-    Node *lt {nullptr}; //левый
-    Node *rt {nullptr};  //правый
-    friend void BuildTable(Node* head);
+    ifstream & fin_;
 };
 
-/*---------------------------------------------
-                   additional functions
----------------------------------------------*/
+class IOutputStream {
+public:
+    IOutputStream(ofstream & fout):
+            fout_(fout)
+    {}
+    void Write(byte value){
+        fout_ << value;
+    }
 
-void wfs( Node *t ); //обход по слоям
-void prefix_traverse( Node *t, void f( Node* ) ); //обход в глубину
-void print_key( Node *t );
+private:
+    ofstream & fout_;
+};
 
-//кодирование и сжатие с сохранением таблицы и дерева
-void encode(const std::string& original);
-//разархивация файла по таблице и дереву
-void decode(const std::string& compression);
+
+/***************************************************************************/
+
+class bitostream{
+public:
+    bitostream(IOutputStream & stream);
+
+    // Запись битов. Вернуть true, если успешно
+    bool write(bit value);
+
+private:
+    // Поток
+    IOutputStream &  stream_;
+
+    // Количество байт
+    byte currentByte_;
+
+    // Количество бит в текущем байте
+    char bitsWritten_;
+
+};
+
+
+
+class bitistream{
+public:
+    bitistream(IInputStream & stream);
+
+    // Чтение бит. Вернет false в случае конца чтения
+    bool read(bit & value);
+
+private:
+    // Поток
+    IInputStream &  stream_;
+
+    // Количество байт
+    byte    currentByte_;
+
+    // Количество бит в текущем байте
+    char    bitsRead_;
+
+};
+
+/******************************************************************************/
+
+class Node{
+public:
+    Node();
+    Node(byte value, long weight, Node * left, Node * right);
+
+    byte value;
+    long weight;
+    Node* left;
+    Node* right;
+};
+
+bool nodeComparator(Node * & L, Node * R);
+
+// Постороить дерево Хаффмана
+Node* buildTree(map <byte, long> freq);
+
+// Таблица кодов
+void getCodes(Node * node, long code, map <byte, long> & codes);
+
+// Вывод дерева Хаффмана (для отладки)
+void printTree(Node * node, int depth, const map <byte, long> & codes);
+
+// Удалить дерево
+void deleteTree(Node * node);
+
+// Длина каждого кода символа
+void countCodeLengths(const map <byte, long> & codes, map <byte, char> & codeLengths);
+
+// Удаление лишних узлов в дереве
+void fixTree(Node * node);
+
+// Encode файла
+void Encode(IInputStream & original, IOutputStream & compressed);
+
+// Decode файла
+void Decode(IInputStream & compressed, IOutputStream & decoded);
+
 
 #endif // HUFFMAN_H
